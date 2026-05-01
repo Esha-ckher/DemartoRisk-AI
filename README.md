@@ -20,7 +20,7 @@ A web-based MVP for pre-usage skincare decision support, designed for adolescent
 INCIDecoder · PubMed · Acne.org · Daraz · CosDNA · Folliculitis Scout · TikTok community analysis
 
 ## How to run
-Download `DermatoRisk_AI_Final.html` and open in any browser. No installation, no API key, no internet required.
+Download `DermatoRisk_AI_mvp.html` and open in any browser. No installation, no API key, no internet required.
 
 ## Disclaimer
 This tool is for decision-support only and does not replace professional dermatological consultation.
