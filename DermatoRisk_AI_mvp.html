@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DermatoRisk AI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F9F6F1;
+  --surface:#FFFFFF;
+  --border:#EAE4DB;
+  --border2:#D9D0C3;
+  --text:#18140F;
+  --muted:#7A736A;
+  --label:#B0A898;
+  --accent:#B5622A;
+  --accent-light:#F7EDE3;
+  --green:#246B42;
+  --green-bg:#EBF5EF;
+  --green-border:#B3D9C2;
+  --yellow:#7A5C00;
+  --yellow-bg:#FEF9E7;
+  --yellow-border:#F0D875;
+  --red:#B5262A;
+  --red-bg:#FDF0F0;
+  --red-border:#F0B3B3;
+  --blue:#1A5FA8;
+  --blue-bg:#EDF4FD;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg:0 2px 8px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.08);
+}
+
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── HEADER ── */
+.app-header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:20px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 1px 0 var(--border);
+}
+.logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);letter-spacing:-0.3px;}
+.logo em{color:var(--accent);font-style:normal;}
+.header-badge{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:4px 10px;border-radius:50px;}
+
+.app{max-width:660px;margin:0 auto;padding:32px 16px 64px;}
+
+/* ── SECTION INTRO ── */
+.intro{text-align:center;margin-bottom:32px;}
+.intro h2{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;line-height:1.3;color:var(--text);margin-bottom:8px;}
+.intro p{font-size:13px;color:var(--muted);line-height:1.7;max-width:460px;margin:0 auto;}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card-title{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--label);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── INPUT MODE TOGGLE ── */
+
+
+
+/* ── PRODUCT CARDS ── */
+.product-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pcard{background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:16px 14px;cursor:pointer;transition:all 0.18s;text-align:center;}
+.pcard:hover{border-color:var(--accent);background:var(--accent-light);transform:translateY(-2px);box-shadow:0 4px 14px rgba(181,98,42,0.12);}
+.pcard.selected{border-color:var(--accent);background:var(--accent-light);box-shadow:0 0 0 3px rgba(181,98,42,0.15);}
+.pcard-full{grid-column:1/-1;}
+.pcard-emoji{font-size:26px;margin-bottom:8px;}
+.pcard-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.4;}
+.pcard-brand{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.pcard-tag{display:inline-block;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:50px;}
+.pcard-tag-local{background:rgba(181,98,42,0.1);color:var(--accent);border:1px solid rgba(181,98,42,0.25);}
+.pcard-tag-intl{background:var(--blue-bg);color:var(--blue);border:1px solid #BDD5F5;}
+.pcard-tag-viral{background:#FFF0F6;color:#C2185B;border:1px solid #F8BBD0;}
+
+/* ── PRODUCT SELECTOR ── */
+
+/* ── PHOTO UPLOAD ── */
+
+
+/* ── PILLS ── */
+.pill-group{display:flex;flex-wrap:wrap;gap:7px;}
+.pill{padding:8px 16px;border:1.5px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;transition:all 0.15s;background:var(--surface);color:var(--muted);user-select:none;font-family:'DM Sans',sans-serif;}
+.pill:hover{border-color:var(--accent);color:var(--accent);}
+.pill.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;}
+
+/* ── CLAIM INPUT ── */
+.claim-field textarea{
+  width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--bg);
+  outline:none;resize:vertical;min-height:76px;transition:border 0.2s;line-height:1.6;
+}
+.claim-field textarea:focus{border-color:var(--accent);}
+.claim-field textarea::placeholder{color:var(--label);}
+
+/* ── ANALYZE BUTTON ── */
+.analyze-btn{
+  width:100%;padding:15px;background:var(--accent);color:#fff;border:none;
+  border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:13px;
+  font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  transition:all 0.2s;margin-top:4px;
+}
+.analyze-btn:hover{background:#9E5020;transform:translateY(-1px);box-shadow:0 4px 16px rgba(181,98,42,0.3);}
+.analyze-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.error-msg{font-size:13px;color:var(--red);background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:12px 14px;margin-bottom:12px;display:none;line-height:1.6;}
+
+/* ── RESULTS ── */
+#results{display:none;}
+
+/* Risk Banner */
+.risk-banner{border-radius:var(--radius);padding:22px 26px;margin-bottom:16px;display:flex;align-items:flex-start;gap:18px;box-shadow:var(--shadow);}
+.risk-banner.safe{background:var(--green-bg);border:1.5px solid var(--green-border);}
+.risk-banner.caution{background:var(--yellow-bg);border:1.5px solid var(--yellow-border);}
+.risk-banner.high{background:var(--red-bg);border:1.5px solid var(--red-border);}
+.risk-emoji{font-size:38px;flex-shrink:0;line-height:1;}
+.risk-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px;}
+.risk-label.safe{color:var(--green);}
+.risk-label.caution{color:var(--yellow);}
+.risk-label.high{color:var(--red);}
+.risk-title{font-family:'DM Serif Display',serif;font-size:24px;margin-bottom:4px;}
+.risk-title.safe{color:var(--green);}
+.risk-title.caution{color:var(--yellow);}
+.risk-title.high{color:var(--red);}
+.risk-summary{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* Product chip */
+.product-chip{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);padding:8px 14px;border-radius:50px;font-size:13px;margin-bottom:16px;box-shadow:var(--shadow);}
+.product-chip strong{color:var(--text);font-weight:600;}
+.product-chip span{color:var(--muted);}
+
+/* Ingredient flags */
+.ing-flags{display:flex;flex-direction:column;gap:10px;}
+.ing-flag-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:var(--bg);}
+.ing-flag-row.high-risk{background:var(--red-bg);border:1px solid var(--red-border);}
+.ing-flag-row.med-risk{background:var(--yellow-bg);border:1px solid var(--yellow-border);}
+.ing-flag-row.low-risk{background:var(--green-bg);border:1px solid var(--green-border);}
+.ing-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ing-dot.high{background:var(--red);}
+.ing-dot.medium{background:#C0860A;}
+.ing-dot.low{background:var(--green);}
+.ing-name{font-weight:600;font-size:13px;color:var(--text);}
+.ing-reason{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;}
+.ing-skin-note{font-size:11px;font-style:italic;color:var(--accent);margin-top:3px;}
+
+/* Dual view */
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.dual-card{border-radius:var(--radius-sm);padding:16px;}
+.dual-card.trend{background:var(--blue-bg);border:1px solid #BDD5F5;}
+.dual-card.clinical{background:var(--red-bg);border:1px solid var(--red-border);}
+.dual-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.dual-card.trend .dual-label{color:var(--blue);}
+.dual-card.clinical .dual-label{color:var(--red);}
+.dual-card p{font-size:13px;line-height:1.65;color:var(--text);}
+
+/* Review bars */
+.review-section{display:flex;flex-direction:column;gap:12px;}
+.review-row{display:flex;align-items:center;gap:12px;}
+.review-label{font-size:12px;color:var(--text);width:155px;flex-shrink:0;line-height:1.4;}
+.review-track{flex:1;background:var(--border);border-radius:50px;height:7px;overflow:hidden;}
+.review-fill{height:100%;border-radius:50px;}
+.review-fill.positive{background:#52B87A;}
+.review-fill.negative{background:#D9534F;}
+.review-fill.neutral{background:#E8B84B;}
+.review-pct{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;width:36px;text-align:right;flex-shrink:0;}
+.review-pct.positive{color:var(--green);}
+.review-pct.negative{color:var(--red);}
+.review-pct.neutral{color:var(--yellow);}
+.review-source{font-size:10px;color:var(--label);margin-top:10px;font-style:italic;line-height:1.6;padding:8px 10px;background:var(--bg);border-radius:6px;border:1px solid var(--border);}
+
+/* Complaints */
+.complaints{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:4px;}
+.complaints li{font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:8px;align-items:flex-start;}
+.complaints li::before{content:'→';color:var(--red);flex-shrink:0;margin-top:1px;font-size:11px;}
+
+/* Claim box */
+.claim-result{border-radius:var(--radius-sm);padding:16px;}
+.claim-result.exaggerated{background:#FFF8F0;border:1px solid #F5D0A8;}
+.claim-result.misleading{background:var(--red-bg);border:1px solid var(--red-border);}
+.claim-result.realistic{background:var(--green-bg);border:1px solid var(--green-border);}
+.claim-result.unverifiable{background:var(--bg);border:1px solid var(--border);}
+.claim-verdict-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.claim-verdict-text{font-size:18px;font-weight:600;font-family:'DM Serif Display',serif;margin-bottom:8px;}
+.claim-result p{font-size:13px;color:var(--text);line-height:1.65;}
+.claim-quote{font-size:12px;color:var(--muted);font-style:italic;padding:10px 12px;background:rgba(0,0,0,0.03);border-left:3px solid var(--border);border-radius:0 6px 6px 0;margin-bottom:12px;}
+
+/* Insight */
+.insight-box{background:var(--accent-light);border:1.5px solid #DFC4A8;border-radius:var(--radius-sm);padding:18px;}
+.insight-box p{font-size:14px;line-height:1.75;color:#5C3416;}
+
+/* Derm reference */
+.derm-ref{background:var(--blue-bg);border:1px solid #BDD5F5;border-left:3px solid var(--blue);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:14px 16px;}
+.derm-ref-source{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:6px;}
+.derm-ref p{font-size:12px;color:#2A4A72;line-height:1.7;}
+
+/* Disclaimer */
+.disclaimer{font-size:11px;color:var(--label);text-align:center;padding:16px;line-height:1.8;border-top:1px solid var(--border);margin-top:4px;}
+
+.reset-btn{width:100%;padding:12px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;margin-top:8px;transition:all 0.2s;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── TRANSITIONS ── */
+#formSection, #results{transition:opacity 0.3s;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="logo">Dermato<em>Risk</em> AI</div>
+  <div class="header-badge">Pakistan · MVP v1.0</div>
+</div>
+
+<div class="app">
+  <div class="intro">
+    <h2>Pre-usage Skincare<br>Risk Assessment</h2>
+    <p>Evidence-based analysis combining ingredient science, dermatology studies, and real user review data — tailored to your skin profile.</p>
+  </div>
+
+  <div id="formSection">
+
+    <!-- PRODUCT INPUT -->
+    <div class="card">
+      <div class="card-title">Select a Product</div>
+      <div class="product-cards-grid" id="productCardsGrid">
+        <div class="pcard" data-val="mandelac" onclick="selectProduct(this)">
+          <div class="pcard-emoji">🧴</div>
+          <div class="pcard-name">MandelAC Face Wash</div>
+          <div class="pcard-brand">Jenpharm · Pakistan</div>
+          <div class="pcard-tag pcard-tag-local">Local · Trending</div>
+        </div>
+        <div class="pcard" data-val="rivaj" onclick="selectProduct(this)">
+          <div class="pcard-emoji">☀️</div>
+          <div class="pcard-name">Whitening Sunblock SPF 60</div>
+          <div class="pcard-brand">Rivaj UK · Pakistan</div>
+          <div class="pcard-tag pcard-tag-local">Local · Mass Market</div>
+        </div>
+        <div class="pcard" data-val="ponds" onclick="selectProduct(this)">
+          <div class="pcard-emoji">💧</div>
+          <div class="pcard-name">Light Moisturizer</div>
+          <div class="pcard-brand">Pond's · Unilever</div>
+          <div class="pcard-tag pcard-tag-intl">International</div>
+        </div>
+        <div class="pcard" data-val="bnb" onclick="selectProduct(this)">
+          <div class="pcard-emoji">🌾</div>
+          <div class="pcard-name">Rice Extract Face Wash</div>
+          <div class="pcard-brand">BnB · Pakistan</div>
+          <div class="pcard-tag pcard-tag-viral">TikTok Viral 🔥</div>
+        </div>
+        <div class="pcard pcard-full" data-val="cerave" onclick="selectProduct(this)">
+          <div class="pcard-emoji">🏥</div>
+          <div class="pcard-name">Hydrating / Foaming Cleanser</div>
+          <div class="pcard-brand">CeraVe · USA</div>
+          <div class="pcard-tag pcard-tag-intl">Global Bestseller</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKIN PROFILE -->
+    <div class="card">
+      <div class="card-title">Your Skin Profile</div>
+
+      <div style="margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;">Skin Type <span style="color:var(--red);font-size:11px;margin-left:4px;">required</span></div>
+        <div class="pill-group" id="skinTypeGroup">
+          <div class="pill" data-val="oily" onclick="selectPill(this,'skinTypeGroup')">Oily</div>
+          <div class="pill" data-val="dry" onclick="selectPill(this,'skinTypeGroup')">Dry</div>
+          <div class="pill" data-val="combination" onclick="selectPill(this,'skinTypeGroup')">Combination</div>
+          <div class="pill" data-val="sensitive" onclick="selectPill(this,'skinTypeGroup')">Sensitive</div>
+          <div class="pill" data-val="normal" onclick="selectPill(this,'skinTypeGroup')">Normal</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;">Skin Concern <span style="font-size:11px;color:var(--label);font-weight:400;margin-left:4px;">pick any that apply</span></div>
+        <div class="pill-group" id="skinConcernGroup">
+          <div class="pill" data-val="acne" onclick="togglePill(this)">Acne</div>
+          <div class="pill" data-val="pigmentation" onclick="togglePill(this)">Pigmentation</div>
+          <div class="pill" data-val="dryness" onclick="togglePill(this)">Dryness</div>
+          <div class="pill" data-val="sensitivity" onclick="togglePill(this)">Sensitivity</div>
+          <div class="pill" data-val="anti-aging" onclick="togglePill(this)">Anti-aging</div>
+          <div class="pill" data-val="redness" onclick="togglePill(this)">Redness</div>
+          <div class="pill" data-val="oiliness" onclick="togglePill(this)">Oiliness</div>
+          <div class="pill" data-val="fungal-acne" onclick="togglePill(this)">Fungal Acne</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLAIM -->
+    <div class="card">
+      <div class="card-title">Social Media Influence</div>
+      <div class="claim-field">
+        <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;">What claim or caption influenced you?</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Paste the exact caption, review or social media claim that made you consider this product</div>
+        <textarea id="smClaim" placeholder="e.g. 'Removes dark spots completely in 7 days' or 'dermatologist approved for all skin types, even sensitive'…"></textarea>
+      </div>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <button class="analyze-btn" onclick="analyze()">Analyze Risk →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// REAL PRODUCT DATABASE (from primary + secondary research)
+// ─────────────────────────────────────────────
+const PRODUCTS = {
+  mandelac: {
+    name: "MandelAC Face Wash",
+    brand: "Jenpharm · Pakistan",
+    riskLevel: "caution",
+    trendLabel: "Trending PK",
+    brandClaim: "Pakistan's most-selling anti-acne face wash. 99% agreed dark spots were completely gone. 96% saw reduced post-acne marks.",
+    ingredients: [
+      { name: "3% Mandelic Acid (AHA)", risk: "medium",
+        reason: "Exfoliating acid — effective for acne & pigmentation but increases UV sensitivity. Must use SPF next morning.",
+        skinNotes: { sensitive: "High irritation risk — AHA too strong for reactive skin", dry: "Can over-exfoliate already dry skin barrier", oily: "Well suited — helps clear congested pores", combination: "Use only on T-zone", normal: "Generally tolerated with proper SPF use" }},
+      { name: "Fragrance / Perfume", risk: "high",
+        reason: "Common allergen — linked to contact dermatitis, redness, and irritation especially for sensitive skin types.",
+        skinNotes: { sensitive: "Major red flag — fragrance is top allergen for reactive skin", dry: "Can trigger redness on compromised barrier", oily: "Lower risk but can still irritate", combination: "Caution on cheek areas", normal: "Low risk for most" }},
+      { name: "Cocamidopropyl Betaine", risk: "low",
+        reason: "Mild surfactant, generally well tolerated. Occasional allergen in those with very reactive skin.",
+        skinNotes: { sensitive: "Rare reactions possible — patch test recommended", dry: "Gentle, unlikely to strip moisture", oily: "Good cleansing without harshness", combination: "Safe for most", normal: "No concerns" }},
+      { name: "Phenoxyethanol", risk: "low",
+        reason: "Common preservative. Safe at cosmetic concentrations but a mild irritant in very high amounts.",
+        skinNotes: { sensitive: "Mild concern — present in most cosmetics", dry: "Generally safe", oily: "No concern", combination: "No concern", normal: "No concern" }},
+    ],
+    trendView: "One of Pakistan's most viral skincare products. Widely praised in Facebook beauty groups, pharmacy counters and Pakistani TikTok for clearing acne and dark spots fast. Dermatologist-prescribed credibility gives it an edge.",
+    clinicalView: "At 3% concentration, mandelic acid is a gentle AHA with good evidence for mild acne (Dayal et al., Journal of Cosmetic Dermatology 2020). Rinse-off format limits efficacy vs leave-on. The 99% dark spot claim is brand-conducted — not an independent clinical trial. SPF is non-negotiable post-use.",
+    reviews: {
+      rows: [
+        { label: "Positive results", pct: 72, type: "positive" },
+        { label: "Irritation / purging", pct: 22, type: "negative" },
+        { label: "Neutral / no effect", pct: 6, type: "neutral" },
+      ],
+      complaints: [
+        "Initial purging / breakout in first 2 weeks (classic AHA response — not necessarily bad)",
+        "Fragrance causing redness and irritation in sensitive skin users",
+        "Many users skip SPF the next morning, causing sun sensitivity complaints",
+        "Overuse (2x daily by beginners) leads to barrier disruption",
+      ],
+      source: "Source: Jenpharm site reviews, Pakistani Facebook skincare groups, Quora comments"
+    },
+    dermRef: {
+      citation: "PubMed — Dayal et al., Journal of Cosmetic Dermatology 2020 + Dębowska et al., Dermatology Review 2015",
+      text: "A study comparing 45% mandelic acid peels vs 30% salicylic acid peels in 50 patients with mild-to-moderate acne found both equally effective, but mandelic acid had better tolerability and fewer adverse effects. At 3% concentration in a face wash, the acid exfoliates gently — effect is real but milder than leave-on formulations."
+    },
+    personalInsights: {
+      oily: "Good match for oily, acne-prone skin. The mandelic acid will help clear congestion. Non-negotiable: use SPF 30+ every morning or the acid will worsen pigmentation in Pakistan's strong UV. Start 3x/week, not daily.",
+      dry: "Use with extreme caution. The AHA will strip your already compromised moisture barrier. If you proceed, use only 2x per week, always follow with a rich ceramide moisturizer, and never skip SPF.",
+      combination: "Suitable for your T-zone but avoid the cheek areas if they're dry. The acid targets oily zones well. Patch test first and ramp up gradually.",
+      sensitive: "High risk for your skin type. The combination of mandelic acid + fragrance makes this a likely irritant. Consider a fragrance-free, non-acid cleanser instead. If you must try: once per week maximum, and stop if any redness appears.",
+      normal: "Well tolerated for most normal skin types. Follow the golden rule: SPF every morning after using this. Start every other day for the first 2 weeks to allow your skin to adjust."
+    },
+    claimAnalysis: {
+      verdict: "Exaggerated",
+      text: "The 99% dark spots gone stat is from a brand-conducted consumer satisfaction survey — not an independent clinical trial. This is a legal but misleading practice. Real-world reviews show 72% positive outcomes, which is solid but far from 99%. The mandelic acid does genuinely help with pigmentation, but results take 6–8 weeks and require consistent SPF use. The dark spot claim without the SPF requirement is an incomplete and potentially harmful instruction."
+    }
+  },
+
+  rivaj: {
+    name: "Whitening & Vanishing Sunblock SPF 60",
+    brand: "Rivaj UK · Pakistan",
+    riskLevel: "caution",
+    trendLabel: "Mass Market",
+    brandClaim: "SPF 60 broad-spectrum UVA/UVB protection. Whitening and vanishing effect — lightens dark spots, evens skin tone. Non-greasy, suitable for all skin types.",
+    ingredients: [
+      { name: "Ethylhexyl Methoxycinnamate", risk: "high",
+        reason: "Primary UV filter — covers UVB ONLY, not UVA. Degrades ~10% within 35 min of sun exposure. Potential estrogenic effects in vitro.",
+        skinNotes: { sensitive: "Can cause photosensitivity reactions in sensitive skin", dry: "Lower risk but offers incomplete UV protection", oily: "May degrade faster on oily skin", combination: "Incomplete UVA coverage concerns all types", normal: "Inadequate standalone for Pakistan's UV index 9–11+" }},
+      { name: "Titanium Dioxide", risk: "medium",
+        reason: "Provides some broad-spectrum coverage but causes white cast. Blocks pores in heavy concentrations.",
+        skinNotes: { sensitive: "Generally safe — physical filter tolerated well", dry: "Fine for dry skin", oily: "Can feel heavy and contribute to breakouts", combination: "White cast on darker tones", normal: "Most tolerable physical filter" }},
+      { name: "Olive Oil", risk: "medium",
+        reason: "Comedogenicity rating 2/5 — moderately pore-clogging. Heavy for oily or acne-prone skin types.",
+        skinNotes: { sensitive: "Can trigger reactions", dry: "Actually beneficial for dry skin", oily: "Moderate pore-clogging risk", combination: "Avoid on T-zone", normal: "Tolerated by most" }},
+      { name: "Beeswax", risk: "medium",
+        reason: "Occlusive agent — creates heavy film. Can contribute to breakouts on oily skin. Causes white cast.",
+        skinNotes: { sensitive: "Watch for allergy (rare)", dry: "Good occlusive — seals moisture", oily: "Risk of clogged pores and white cast", combination: "Problematic on oily zones", normal: "Generally fine" }},
+    ],
+    trendView: "Not viral on TikTok or Instagram. Popular as a budget everyday sunblock in pharmacies and general stores across Pakistan. Wide distribution at ~Rs 340–700 makes it a go-to mass-market option. Not an influencer favourite.",
+    clinicalView: "The SPF 60 claim is misleading — the primary filter (Ethylhexyl Methoxycinnamate) only covers UVB. Without a UVA filter like Tinosorb or Zinc Oxide, broad-spectrum protection is incomplete. For Pakistan's UV Index of 9–11+, dermatologists require PA+++ rated sunscreens. The 'whitening' claim has no independent clinical evidence.",
+    reviews: {
+      rows: [
+        { label: "Positive / satisfied", pct: 55, type: "positive" },
+        { label: "White cast / greasy", pct: 30, type: "negative" },
+        { label: "Breakouts / clogged", pct: 15, type: "negative" },
+      ],
+      complaints: [
+        "Prominent whitish tint on deeper skin tones — Quora users specifically note thick, visible cast",
+        "Greasy finish — particularly problematic in Pakistani summer humidity",
+        "Octinoxate lacks UVA coverage — broad-spectrum claim is overstated",
+        "Breakouts reported for oily and acne-prone skin users",
+        "Whitening effect absent or minimal per real user reports",
+      ],
+      source: "Source: Quora Pakistan skincare community, Zara.pk reviews, Derma.pk Q&A, INCIDecoder analysis"
+    },
+    dermRef: {
+      citation: "INCIDecoder Ingredient Analysis + Photostability Research (Shaath, 2005)",
+      text: "Ethylhexyl Methoxycinnamate is an older-generation chemical filter that only covers UVB and loses ~10% efficacy within 35 minutes of sun exposure. For Pakistan's high UV Index (often 9–11), dermatologists recommend SPF 30+ with PA+++ rating — Rivaj's UVA rating is not clearly stated on packaging."
+    },
+    personalInsights: {
+      oily: "Not recommended for oily skin. The olive oil and beeswax are moderately comedogenic and will likely worsen breakouts. Pakistan's humidity makes this even greasier. Look for a non-comedogenic, gel-formula sunscreen instead.",
+      dry: "Acceptable for dry skin — the occlusive beeswax and olive oil will help retain moisture. But be aware the UVA protection is incomplete. Use it until you can access a better option, but don't rely on it as your only sun protection.",
+      combination: "Mixed results for combination skin. The heavy formula will clog your T-zone while drying your cheek areas. Avoid on oily zones or use only on your drier areas.",
+      sensitive: "Use with caution. The Ethylhexyl Methoxycinnamate can cause photosensitivity reactions in reactive skin. The lack of UVA filtering means your skin isn't fully protected. Patch test on inner arm first.",
+      normal: "Provides basic UVB protection but the UVA gap is a real concern for Pakistan's strong sun. For daily use with prolonged outdoor exposure, upgrade to a PA+++ rated sunscreen. Fine for minimal indoor-to-outdoor transitions."
+    },
+    claimAnalysis: {
+      verdict: "Misleading",
+      text: "The 'broad-spectrum UVA/UVB' claim is the most problematic aspect of this product. The primary filter — Ethylhexyl Methoxycinnamate — only covers UVB radiation. Without documented UVA filters at adequate concentrations, SPF 60 means you're protected from burning but not from UVA damage (aging, DNA damage, pigmentation). The 'whitening and vanishing' claim also has no independent clinical evidence."
+    }
+  },
+
+  ponds: {
+    name: "Light Moisturizer / Super Light Gel",
+    brand: "Pond's · Unilever",
+    riskLevel: "caution",
+    trendLabel: "Established Staple",
+    brandClaim: "Non-oily, lightweight. 48-hour continuous hydration. 200% more hydration for a water-fresh glow. Enriched with Hyaluronic Acid and Vitamin E. Suitable for all skin types.",
+    ingredients: [
+      { name: "Isopropyl Myristate", risk: "high",
+        reason: "Comedogenicity rating 5/5 — one of the most pore-clogging ingredients in cosmetics. High breakout risk.",
+        skinNotes: { sensitive: "Likely to trigger reactions and clog pores", dry: "Pore-clogging even for dry skin", oily: "Critical risk — will worsen breakouts and congestion significantly", combination: "Major concern for T-zone", normal: "Risk of clogged pores even in normal skin" }},
+      { name: "Fragrance / Perfume", risk: "high",
+        reason: "Contains Benzyl Benzoate, Limonene, Linalool — documented allergens causing redness, headaches and contact dermatitis.",
+        skinNotes: { sensitive: "Do not use — fragrance is the #1 allergen for sensitive skin", dry: "Irritates compromised moisture barrier", oily: "Unlikely to cause oiliness but can irritate", combination: "Risk on dry/cheek areas", normal: "Reaction risk varies by individual" }},
+      { name: "Stearic Acid", risk: "high",
+        reason: "Confirmed fungal acne (Malassezia) trigger. Product is not fungal-acne-safe per Folliculitis Scout analysis.",
+        skinNotes: { sensitive: "Potential irritant", dry: "Generally safe for dry skin without fungal concerns", oily: "Fungal acne risk if prone to it", combination: "Risk depends on history of fungal acne", normal: "Risk only if susceptible to fungal acne" }},
+      { name: "Niacinamide (Vitamin B3)", risk: "low",
+        reason: "Well-studied active — skin brightening, barrier strengthening, anti-inflammatory at 4–5% concentration.",
+        skinNotes: { sensitive: "One of the safest actives for sensitive skin", dry: "Helps strengthen compromised barrier", oily: "Reduces sebum production — beneficial", combination: "Great for both zones", normal: "Highly beneficial active" }},
+      { name: "Sodium Hyaluronate (HA)", risk: "low",
+        reason: "Effective humectant — draws moisture into skin. Well tolerated by all skin types.",
+        skinNotes: { sensitive: "Very safe — one of the most tolerated ingredients", dry: "Excellent for dry skin", oily: "Lightweight hydration without heaviness", combination: "Ideal", normal: "Beneficial" }},
+    ],
+    trendView: "Not trending — an established drugstore staple trusted by older Pakistani demographics. The Super Light Gel variant gets occasional mentions for affordability. Overshadowed by newer brands. Reliable and accessible but not a social media moment.",
+    clinicalView: "Contains niacinamide and hyaluronic acid — both with strong clinical evidence. However, Isopropyl Myristate (comedogenicity 5/5) directly contradicts the 'suitable for all skin types' claim. Peppy Blog and Folliculitis Scout identify 5 fungal acne triggers. The '200% more hydration' metric is uncontextualized marketing language.",
+    reviews: {
+      rows: [
+        { label: "Positive / hydrating", pct: 65, type: "positive" },
+        { label: "Breakout / clogged pores", pct: 20, type: "negative" },
+        { label: "Fragrance irritation", pct: 15, type: "negative" },
+      ],
+      complaints: [
+        "Isopropyl Myristate (comedogenicity 5/5) causes breakouts in acne-prone users — widely documented",
+        "Multiple fragrance allergens (Benzyl Benzoate, Limonene, Linalool) cause headaches and redness",
+        "Stearic acid triggers fungal acne (Malassezia folliculitis) — confirmed not FA-safe",
+        "SPF 15 on cream variant is inadequate for Pakistan — misleads users into skipping sunscreen",
+        "Tub packaging is unhygienic — repeated finger contact introduces bacteria",
+      ],
+      source: "Source: Acne.org (150+ reviews), Peppy Blog ingredient analysis, CosDNA, Folliculitis Scout, TheBeautyInsideOut"
+    },
+    dermRef: {
+      citation: "Niacinamide Research — Dermatology Research and Practice 2014 + Folliculitis Scout FA Analysis",
+      text: "Niacinamide at 4–5% has strong clinical evidence for brightening, barrier strengthening, and anti-acne properties. However, Isopropyl Myristate (comedogenicity 5/5) is a well-documented pore-clogger. Peppy Blog and Folliculitis Scout confirm 5 fungal acne triggers present in this formulation."
+    },
+    personalInsights: {
+      oily: "Not recommended for oily skin. Isopropyl Myristate has a comedogenicity rating of 5/5 — the highest possible — and is very likely to worsen breakouts and clog pores. The good actives (niacinamide, HA) are present but cancelled out by this ingredient for your skin type.",
+      dry: "Acceptable for dry skin — the occlusive nature helps seal in moisture and dry skin is less prone to the comedogenic effects. However the fragrance allergens may still irritate if your barrier is compromised. Patch test first.",
+      combination: "Mixed bag. The moisturizing actives benefit your dry areas but the comedogenic ingredients will likely clog your oily T-zone. Use only on drier areas (cheeks, forehead if dry) and avoid nose and chin.",
+      sensitive: "Do not use. This product contains fragrance allergens (Benzyl Benzoate, Limonene, Linalool) that are documented contact sensitizers. Sensitive skin is the most at-risk skin type for this formulation.",
+      normal: "Tolerable for normal skin but the comedogenic risk is still real. The niacinamide and HA are the good news. Watch for early signs of clogged pores or small bumps. If breakouts develop, discontinue immediately."
+    },
+    claimAnalysis: {
+      verdict: "Misleading",
+      text: "Suitable for all skin types is directly contradicted by the ingredient list. Isopropyl Myristate (pore-clogging rating 5/5) makes this product actively harmful for oily and acne-prone skin. The 200% more hydration claim is uncontextualized — compared to what, with what method, on what skin type? This is unmeasured marketing language, not clinical data."
+    }
+  },
+
+  bnb: {
+    name: "Rice Extract Glow Kit Face Wash",
+    brand: "BnB (Body N Body) · Pakistan",
+    riskLevel: "safe",
+    trendLabel: "TikTok Viral PK",
+    brandClaim: "Gently cleanses and nourishes. Brightens complexion, evens skin tone. Soothes and calms. Natural rice extract for a refreshed, glowing finish. Paraben-free, sulfate-free. Ideal for all skin types.",
+    ingredients: [
+      { name: "Rice Water & Rice Extract", risk: "low",
+        reason: "Contains ferulic acid, kojic acid, allantoin, inositol. Real brightening actives — but concentration in a rinse-off wash is lower than leave-on treatments.",
+        skinNotes: { sensitive: "Very gentle — unlikely to irritate", dry: "Allantoin helps soothe and hydrate", oily: "Non-comedogenic and gentle for oily skin", combination: "Suitable across face", normal: "Beneficial and well tolerated" }},
+      { name: "Coco-Glucoside", risk: "low",
+        reason: "Mild plant-derived surfactant. Gentle cleansing without stripping. Well tolerated by most skin types.",
+        skinNotes: { sensitive: "One of the safest cleansing agents available", dry: "Preserves skin moisture while cleansing", oily: "Cleanses without over-stripping", combination: "Ideal surfactant", normal: "No concerns" }},
+      { name: "Glycerin", risk: "low",
+        reason: "Humectant — draws moisture into skin. Well-documented safety profile.",
+        skinNotes: { sensitive: "Very safe", dry: "Excellent for hydration", oily: "Lightweight — doesn't add oiliness", combination: "Ideal", normal: "Beneficial" }},
+      { name: "Sodium Hydroxide (pH adjuster)", risk: "low",
+        reason: "Used in tiny amounts to adjust pH — standard cosmetic ingredient. Safe at balanced concentrations.",
+        skinNotes: { sensitive: "Safe at proper pH", dry: "No concern", oily: "No concern", combination: "No concern", normal: "No concern" }},
+    ],
+    trendView: "One of the most viral Pakistani skincare products on TikTok — tens of millions of views across #BNBricefacewash. Endorsed by Pakistani celebrities. A counterfeit problem has emerged — 'original vs fake' is itself a trending topic. Mass popularity driven by ~Rs 550 price and K-beauty rice skincare aesthetics.",
+    clinicalView: "Rice water contains ferulic acid, kojic acid, and allantoin — all with real dermatological backing (Lin et al., 2005). A 2024 review found 10% increase in skin hydration after 28 days of rice water use. However, concentrations of these actives in a rinse-off face wash are much lower than in leave-on treatments. Skin-feel improvement is real. Dramatic brightening is not supported.",
+    reviews: {
+      rows: [
+        { label: "Positive / skin feels good", pct: 68, type: "positive" },
+        { label: "Neutral / no real change", pct: 22, type: "neutral" },
+        { label: "Irritation / fake product", pct: 10, type: "negative" },
+      ],
+      complaints: [
+        "Widespread counterfeiting — TikTok flooded with 'original vs fake' videos. Fake versions cause skin reactions",
+        "Brightening claims considered exaggerated — rice extract in a rinse-off format has limited standalone evidence for visible brightening",
+        "No quantified active ingredient percentages disclosed on packaging",
+        "Ingredient list on some packs has apparent misprints — transparency concern",
+      ],
+      source: "Source: TikTok community content, BNB site reviews (bodynbody.com), Daraz listing comments, Kiboclinics 2026 review"
+    },
+    dermRef: {
+      citation: "Kiboclinics 2026 Review + PubMed Rice Extract Literature (Lin et al., 2005 + 2024 hydration study)",
+      text: "Rice water contains ferulic acid, kojic acid, allantoin, and inositol. Ferulic acid enhances photoprotection of vitamins C and E. Kojic acid inhibits tyrosinase (melanin enzyme) by up to 70% in vitro. A 2024 study found 10% increase in skin hydration after 28 days of rice water use. Skin-feel improvement is real; dramatic whitening is not clinically supported at rinse-off concentrations."
+    },
+    personalInsights: {
+      oily: "A good, gentle daily cleanser for oily skin. It won't strip your skin or worsen oiliness. Manage expectations — this is a gentle cleanser, not an acne treatment. Pair with a proper oil-control moisturizer for best results.",
+      dry: "Good choice for dry skin — the glycerin and gentle surfactants won't strip moisture. Allantoin in the rice extract adds a mild soothing effect. Follow with a rich moisturizer as this cleanser alone won't address dryness.",
+      combination: "Excellent fit for combination skin. The gentle formula cleanses oily zones without over-drying cheeks. No concerning ingredients for either zone of your face.",
+      sensitive: "One of the safer products for sensitive skin in this analysis. No known harsh actives, fragrance is not a documented concern. The low irritation profile makes it a reasonable option, though always patch test first.",
+      normal: "Safe and effective daily cleanser. Good for maintaining skin without active treatment. If you're looking for brightening, the rice extract provides mild effects — pair with a leave-on niacinamide serum for more noticeable results."
+    },
+    claimAnalysis: {
+      verdict: "Exaggerated",
+      text: "Brightens complexion and evens skin tone is an overreach for a rinse-off face wash. The active ingredients (kojic acid, ferulic acid from rice) have genuine brightening science behind them, but their concentration in a product you wash off after 30 seconds is too low for visible tone-evening. The claim would be more accurate as a gentle cleanser that supports a brighter-feeling complexion — not a brightening treatment."
+    }
+  },
+
+  cerave: {
+    name: "Hydrating / Foaming Facial Cleanser",
+    brand: "CeraVe · L'Oréal · USA",
+    riskLevel: "safe",
+    trendLabel: "Global Bestseller",
+    brandClaim: "Developed with dermatologists. Gently cleanses without disrupting the skin's natural protective barrier. Non-comedogenic, fragrance-free, non-irritating. Hydrates while cleansing. Accepted by the National Eczema Association.",
+    ingredients: [
+      { name: "Ceramides 1, 3, 6-II", risk: "low",
+        reason: "Ceramides make up ~50% of the skin barrier lipid matrix. Clinically validated for barrier restoration in dry skin, eczema, rosacea, and acne. Highly beneficial.",
+        skinNotes: { sensitive: "One of the most recommended ingredients for sensitive skin", dry: "Core treatment ingredient for dry and eczema-prone skin", oily: "Maintains barrier without adding oil", combination: "Beneficial for all zones", normal: "Strengthens and maintains healthy barrier" }},
+      { name: "Hyaluronic Acid", risk: "low",
+        reason: "Humectant — attracts and retains moisture. Well-studied, universally tolerated across all skin types.",
+        skinNotes: { sensitive: "Extremely safe and beneficial", dry: "Excellent hydration support", oily: "Lightweight — no added oiliness", combination: "Ideal", normal: "Beneficial" }},
+      { name: "Niacinamide", risk: "low",
+        reason: "4–5% concentration — brightening, anti-inflammatory, sebum-regulating, barrier-strengthening. Strong clinical evidence.",
+        skinNotes: { sensitive: "Among the safest actives for sensitive skin", dry: "Strengthens compromised barrier", oily: "Reduces excess sebum production", combination: "Beneficial for both zones", normal: "Highly effective for overall skin health" }},
+      { name: "MVE Technology (patented)", risk: "low",
+        reason: "Multivesicular emulsion delivery system — releases moisturizing ingredients gradually for sustained hydration.",
+        skinNotes: { sensitive: "Delivers actives gently without irritation", dry: "Excellent for sustained hydration throughout the day", oily: "Controlled release avoids overloading skin", combination: "Beneficial", normal: "Beneficial" }},
+    ],
+    trendView: "Globally massive — CeraVe became a TikTok skincare phenomenon from 2020–2022 and continues to trend. Now available through official Pakistan distributors (ceravepak.com) and widely on Daraz. Pakistani dermatologists actively recommend it. The premium price vs local alternatives is the main barrier.",
+    clinicalView: "CeraVe's ceramide formulation is backed by multiple published studies. Ceramides, hyaluronic acid, and niacinamide are recognized by expert dermatology panels (Canadian Delphi consensus on rosacea management) as key barrier-restoring ingredients. The National Eczema Association has certified CeraVe. Parabens controversy on TikTok has been publicly rebutted by dermatologists (Dr Dray et al.) as misinformation.",
+    reviews: {
+      rows: [
+        { label: "Positive / skin improved", pct: 82, type: "positive" },
+        { label: "Breakout / reaction", pct: 10, type: "negative" },
+        { label: "Too gentle / no effect", pct: 8, type: "neutral" },
+      ],
+      complaints: [
+        "Feels like washing with lotion — users expecting foam find Hydrating version underwhelming",
+        "Small minority report breakouts — often linked to using wrong variant (hydrating vs foaming) for their skin type",
+        "Anti-CeraVe TikTok discourse (natural/tallow community) alleges parabens harm — dermatologists have publicly rebutted this as misinformation",
+        "Price barrier in Pakistan — imported version Rs 2,000–4,500 for 87ml vs local competitors",
+      ],
+      source: "Source: Acne.org (150+ reviews), TikTok discourse analysis, CeraVe Pakistan reviews, Amazon (4.6★ / 50,000+ ratings)"
+    },
+    dermRef: {
+      citation: "L'Oréal Dermatological Beauty Clinical Studies + Canadian Delphi Consensus (Rosacea Management) + National Eczema Association Certification",
+      text: "Ceramides make up ~50% of the skin barrier's lipid matrix — replenishing them is clinically validated for dry skin, eczema, rosacea, and acne-associated barrier dysfunction. An expert panel of Canadian dermatologists identified ceramides, hyaluronic acid, and niacinamide as key barrier-restoring ingredients. CeraVe was founded after dermatologists observed compromised barriers in acne, eczema, and psoriasis — the formulation logic is directly tied to this clinical insight."
+    },
+    personalInsights: {
+      oily: "The Foaming Cleanser variant is your best choice — it provides effective cleansing without stripping. The niacinamide helps regulate sebum over time. CeraVe is one of the few cleansers that works across the oily-to-sensitive spectrum without compromise.",
+      dry: "The Hydrating Cleanser is made for you. Ceramides and hyaluronic acid support your barrier while cleansing — most cleansers strip dry skin further. This is one of the top dermatologist recommendations specifically for dry and eczema-prone skin types.",
+      combination: "Either variant works — use the Hydrating Cleanser if your dry areas are pronounced, or Foaming if oiliness is your main concern. The non-comedogenic formula is safe for your T-zone.",
+      sensitive: "Among the best options available for sensitive skin. Fragrance-free, National Eczema Association certified, and formulated specifically for compromised skin barriers. The ceramide complex actively repairs reactive skin over time. Start with the Hydrating variant.",
+      normal: "Excellent all-around choice. The ceramide-based formula maintains a healthy barrier even when your skin doesn't demand intensive repair. A solid daily cleanser that won't cause problems and actively supports long-term skin health."
+    },
+    claimAnalysis: {
+      verdict: "Realistic",
+      text: "Developed with dermatologists and fragrance-free are both verifiable and accurate. The National Eczema Association certification is a real, third-party credential. Non-comedogenic has been substantiated by real-world reviews (82% positive, low breakout reports). This is one of the more honest and clinically substantiated marketing claims in this dataset."
+    }
+  }
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let skinType = '';
+let skinConcerns = [];
+let matchedProduct = null;
+
+// ─────────────────────────────────────────────
+// UI FUNCTIONS
+// ─────────────────────────────────────────────
+function selectProduct(el) {
+  document.querySelectorAll('.pcard').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  matchedProduct = el.dataset.val;
+}
+
+function selectPill(el, groupId) {
+  document.querySelectorAll('#'+groupId+' .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  skinType = el.dataset.val;
+}
+
+function togglePill(el) {
+  el.classList.toggle('active');
+  const v = el.dataset.val;
+  skinConcerns = el.classList.contains('active')
+    ? [...skinConcerns, v]
+    : skinConcerns.filter(x => x !== v);
+}
+
+
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function hideError() {
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+// ─────────────────────────────────────────────
+// ANALYZE
+// ─────────────────────────────────────────────
+function analyze() {
+  hideError();
+
+  if (!skinType) { showError('Please select your skin type to continue.'); return; }
+
+  if (!matchedProduct) { showError('Please select a product to continue.'); return; }
+
+  const product = PRODUCTS[matchedProduct];
+  const claim = document.getElementById('smClaim').value.trim();
+
+  renderResults(product, claim);
+}
+
+// ─────────────────────────────────────────────
+// RENDER RESULTS
+// ─────────────────────────────────────────────
+function renderResults(product, userClaim) {
+  document.getElementById('formSection').style.display = 'none';
+
+  const riskConfig = {
+    safe:    { icon: '✅', cls: 'safe',    label: 'RISK LEVEL',   title: 'Safe to Use' },
+    caution: { icon: '⚠️', cls: 'caution', label: 'RISK LEVEL',   title: 'Use with Caution' },
+    high:    { icon: '🚫', cls: 'high',    label: 'HIGH RISK',    title: 'High Risk' }
+  };
+  const rc = riskConfig[product.riskLevel];
+
+  // Build ingredient flags filtered to skin type
+  const ingHTML = product.ingredients.map(ing => {
+    const skinNote = ing.skinNotes[skinType] || '';
+    const dotCls = ing.risk === 'high' ? 'high' : ing.risk === 'medium' ? 'medium' : 'low';
+    const rowCls = ing.risk === 'high' ? 'high-risk' : ing.risk === 'medium' ? 'med-risk' : 'low-risk';
+    return `
+      <div class="ing-flag-row ${rowCls}">
+        <div class="ing-dot ${dotCls}"></div>
+        <div>
+          <div class="ing-name">${ing.name}</div>
+          <div class="ing-reason">${ing.reason}</div>
+          ${skinNote ? `<div class="ing-skin-note">For your ${skinType} skin: ${skinNote}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  // Review bars
+  const barsHTML = product.reviews.rows.map(r => `
+    <div class="review-row">
+      <div class="review-label">${r.label}</div>
+      <div class="review-track"><div class="review-fill ${r.type}" style="width:${r.pct}%"></div></div>
+      <div class="review-pct ${r.type}">${r.pct}%</div>
+    </div>`).join('');
+
+  const complaintsHTML = product.reviews.complaints.map(c => `<li>${c}</li>`).join('');
+
+  // Claim section
+  const claimToAnalyze = userClaim || product.brandClaim;
+  const claimData = product.claimAnalysis;
+  const verdictStyles = {
+    Realistic: { cls:'realistic', color:'var(--green)', emoji:'✅' },
+    Exaggerated: { cls:'exaggerated', color:'var(--accent)', emoji:'⚡' },
+    Misleading: { cls:'misleading', color:'var(--red)', emoji:'🚨' },
+    Unverifiable: { cls:'unverifiable', color:'var(--muted)', emoji:'❓' },
+  };
+  const vs = verdictStyles[claimData.verdict] || verdictStyles.Unverifiable;
+
+  // Personalized insight
+  const insight = product.personalInsights[skinType] || product.personalInsights.normal;
+
+  const html = `
+    <div class="product-chip">
+      <strong>${product.name}</strong>
+      <span>·</span>
+      <span>${product.brand}</span>
+    </div>
+
+    <div class="risk-banner ${rc.cls}">
+      <div class="risk-emoji">${rc.icon}</div>
+      <div>
+        <div class="risk-label ${rc.cls}">${rc.label}</div>
+        <div class="risk-title ${rc.cls}">${rc.title}</div>
+        <div class="risk-summary">${product.trendLabel} · Analyzed for ${skinType} skin${skinConcerns.length ? ' · Concerns: ' + skinConcerns.join(', ') : ''}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ingredient Risk Flags — For Your Skin Type</div>
+      <div class="ing-flags">${ingHTML}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Trend vs Clinical Reality</div>
+      <div class="dual-grid">
+        <div class="dual-card trend">
+          <div class="dual-label">📱 Trend View</div>
+          <p>${product.trendView}</p>
+        </div>
+        <div class="dual-card clinical">
+          <div class="dual-label">🔬 Clinical View</div>
+          <p>${product.clinicalView}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Review Pattern Analysis</div>
+      <div class="review-section">
+        ${barsHTML}
+      </div>
+      <div style="margin-top:14px;">
+        <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--label);margin-bottom:8px;">Common Complaints</div>
+        <ul class="complaints">${complaintsHTML}</ul>
+      </div>
+      <div class="review-source">${product.reviews.source}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Social Media Claim Analysis</div>
+      ${userClaim ? `<div class="claim-quote">"${userClaim}"</div>` : `<div class="claim-quote" style="opacity:0.6;">Analyzing brand claim: "${product.brandClaim.substring(0,120)}…"</div>`}
+      <div class="claim-result ${vs.cls}">
+        <div class="claim-verdict-label" style="color:${vs.color}">Verdict</div>
+        <div class="claim-verdict-text" style="color:${vs.color}">${vs.emoji} ${claimData.verdict}</div>
+        <p>${claimData.text}</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Personalized Insight — ${skinType.charAt(0).toUpperCase()+skinType.slice(1)} Skin</div>
+      <div class="insight-box"><p>${insight}</p></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Dermatology Reference</div>
+      <div class="derm-ref">
+        <div class="derm-ref-source">${product.dermRef.citation}</div>
+        <p>${product.dermRef.text}</p>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      ⚕️ DermatoRisk AI is a decision-support and awareness tool only. It does not store personal data and does not replace professional dermatological consultation. Review statistics are aggregated from public sources. Always patch test before full use.
+      <br><br>
+      Data sources: INCIDecoder · Skinsort · CosDNA · PubMed · Daraz · Acne.org · TikTok community analysis · Folliculitis Scout · Derma.pk
+    </div>
+
+    <button class="reset-btn" onclick="resetForm()">← Analyze another product</button>
+  `;
+
+  const resultsEl = document.getElementById('results');
+  resultsEl.innerHTML = html;
+  resultsEl.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─────────────────────────────────────────────
+// RESET
+// ─────────────────────────────────────────────
+function resetForm() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('formSection').style.display = 'block';
+  document.getElementById('smClaim').value = '';
+  document.querySelectorAll('.pcard.selected').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.pill.active').forEach(p => p.classList.remove('active'));
+  skinType = ''; skinConcerns = []; matchedProduct = null;
+  hideError();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
