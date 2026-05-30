@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DermatoRisk AI</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F9F6F1;--surface:#FFFFFF;--border:#EAE4DB;--border2:#D9D0C3;
+  --text:#18140F;--muted:#7A736A;--label:#B0A898;
+  --accent:#B5622A;--accent-light:#F7EDE3;
+  --green:#246B42;--green-bg:#EBF5EF;--green-border:#B3D9C2;
+  --yellow:#7A5C00;--yellow-bg:#FEF9E7;--yellow-border:#F0D875;
+  --red:#B5262A;--red-bg:#FDF0F0;--red-border:#F0B3B3;
+  --blue:#1A5FA8;--blue-bg:#EDF4FD;
+  --purple:#6B3FA0;--purple-bg:#F3EEFF;--purple-border:#D4B8FF;
+  --radius:16px;--radius-sm:10px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg:0 2px 8px rgba(0,0,0,0.08),0 12px 40px rgba(0,0,0,0.08);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--border);}
+.logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);}
+.logo em{color:var(--accent);font-style:normal;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.badge{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:50px;}
+.badge-ai{color:var(--purple);background:var(--purple-bg);border:1px solid var(--purple-border);}
+.badge-pk{color:var(--muted);background:var(--bg);border:1px solid var(--border);}
+
+.app{max-width:640px;margin:0 auto;padding:32px 16px 64px;}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:32px;}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple);background:var(--purple-bg);border:1px solid var(--purple-border);padding:5px 14px;border-radius:50px;margin-bottom:14px;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:30px;font-weight:400;line-height:1.25;margin-bottom:10px;color:var(--text);}
+.hero h1 em{color:var(--accent);font-style:normal;}
+.hero p{font-size:13px;color:var(--muted);line-height:1.75;max-width:440px;margin:0 auto;}
+
+/* SEARCH CARD */
+.search-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:14px;box-shadow:var(--shadow-lg);}
+.search-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--label);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.search-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.search-box{position:relative;margin-bottom:12px;}
+.search-input{width:100%;padding:14px 48px 14px 16px;border:2px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--bg);outline:none;transition:border 0.2s;}
+.search-input:focus{border-color:var(--accent);background:#fff;}
+.search-input::placeholder{color:var(--label);}
+.search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
+
+.examples-label{font-size:11px;color:var(--label);margin-bottom:8px;}
+.examples{display:flex;flex-wrap:wrap;gap:6px;}
+.ex-pill{font-size:11px;padding:6px 13px;border:1px solid var(--border);border-radius:50px;cursor:pointer;color:var(--muted);background:var(--surface);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.ex-pill:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card-title{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--label);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* PILLS */
+.field-label{font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px;}
+.field-sublabel{font-size:11px;color:var(--label);font-weight:400;margin-left:6px;}
+.required-dot{color:var(--red);font-size:11px;margin-left:4px;}
+.pill-group{display:flex;flex-wrap:wrap;gap:7px;}
+.pill{padding:8px 16px;border:1.5px solid var(--border);border-radius:50px;font-size:13px;cursor:pointer;transition:all 0.15s;background:var(--surface);color:var(--muted);user-select:none;font-family:'DM Sans',sans-serif;}
+.pill:hover{border-color:var(--accent);color:var(--accent);}
+.pill.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;}
+
+/* CLAIM */
+.claim-textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--bg);outline:none;resize:vertical;min-height:76px;transition:border 0.2s;line-height:1.6;}
+.claim-textarea:focus{border-color:var(--accent);}
+.claim-textarea::placeholder{color:var(--label);}
+
+/* ANALYZE BTN */
+.analyze-btn{width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.analyze-btn:hover{background:#9E5020;transform:translateY(-1px);box-shadow:0 6px 20px rgba(181,98,42,0.3);}
+.analyze-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
+
+.error-msg{font-size:13px;color:var(--red);background:var(--red-bg);border:1px solid var(--red-border);border-radius:8px;padding:12px 14px;margin-bottom:12px;display:none;line-height:1.6;}
+
+/* LOADING */
+.loading-screen{display:none;text-align:center;padding:64px 24px;}
+.loading-ring{width:48px;height:48px;border:3px solid var(--border);border-top:3px solid var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-product{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:6px;}
+.loading-sub{font-size:13px;color:var(--muted);}
+.loading-steps{display:flex;flex-direction:column;gap:6px;margin-top:20px;max-width:300px;margin-left:auto;margin-right:auto;}
+.loading-step{font-size:12px;color:var(--label);padding:7px 14px;background:var(--surface);border:1px solid var(--border);border-radius:50px;transition:all 0.3s;}
+.loading-step.active{color:var(--accent);border-color:var(--accent);background:var(--accent-light);}
+.loading-step.done{color:var(--green);border-color:var(--green-border);background:var(--green-bg);}
+
+/* RESULTS */
+#results{display:none;}
+
+.result-header{margin-bottom:16px;}
+.product-chip{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);padding:8px 16px;border-radius:50px;font-size:13px;margin-bottom:14px;box-shadow:var(--shadow);}
+.product-chip strong{color:var(--text);font-weight:600;}
+.ai-chip{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--purple);background:var(--purple-bg);border:1px solid var(--purple-border);padding:3px 10px;border-radius:50px;font-weight:600;font-family:'Syne',sans-serif;letter-spacing:0.5px;}
+
+.risk-banner{border-radius:var(--radius);padding:24px 26px;margin-bottom:16px;display:flex;align-items:flex-start;gap:18px;box-shadow:var(--shadow);}
+.risk-banner.safe{background:var(--green-bg);border:1.5px solid var(--green-border);}
+.risk-banner.caution{background:var(--yellow-bg);border:1.5px solid var(--yellow-border);}
+.risk-banner.high{background:var(--red-bg);border:1.5px solid var(--red-border);}
+.risk-emoji{font-size:40px;flex-shrink:0;line-height:1;}
+.risk-label-tag{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;}
+.risk-label-tag.safe{color:var(--green);}.risk-label-tag.caution{color:var(--yellow);}.risk-label-tag.high{color:var(--red);}
+.risk-title{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:5px;line-height:1.2;}
+.risk-title.safe{color:var(--green);}.risk-title.caution{color:var(--yellow);}.risk-title.high{color:var(--red);}
+.risk-meta{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* INGREDIENT FLAGS */
+.ing-flags{display:flex;flex-direction:column;gap:10px;}
+.ing-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:10px;}
+.ing-row.high-risk{background:var(--red-bg);border:1px solid var(--red-border);}
+.ing-row.med-risk{background:var(--yellow-bg);border:1px solid var(--yellow-border);}
+.ing-row.low-risk{background:var(--green-bg);border:1px solid var(--green-border);}
+.ing-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ing-dot.high{background:var(--red);}.ing-dot.medium{background:#C0860A;}.ing-dot.low{background:var(--green);}
+.ing-name{font-weight:600;font-size:13px;color:var(--text);}
+.ing-reason{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.55;}
+.ing-skin-note{font-size:11px;color:var(--accent);font-style:italic;margin-top:4px;font-weight:500;}
+
+/* DUAL */
+.dual-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.dual-card{border-radius:var(--radius-sm);padding:16px;}
+.dual-card.trend{background:var(--blue-bg);border:1px solid #BDD5F5;}
+.dual-card.clinical{background:var(--red-bg);border:1px solid var(--red-border);}
+.dual-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.dual-card.trend .dual-label{color:var(--blue);}
+.dual-card.clinical .dual-label{color:var(--red);}
+.dual-card p{font-size:13px;line-height:1.65;color:var(--text);}
+
+/* REVIEW BARS */
+.review-rows{display:flex;flex-direction:column;gap:12px;}
+.review-row-item{display:flex;align-items:center;gap:12px;}
+.review-row-label{font-size:12px;color:var(--text);width:150px;flex-shrink:0;line-height:1.4;}
+.review-track{flex:1;background:var(--border);border-radius:50px;height:8px;overflow:hidden;}
+.review-fill{height:100%;border-radius:50px;transition:width 1s ease;}
+.review-fill.positive{background:#52B87A;}
+.review-fill.negative{background:#D9534F;}
+.review-fill.neutral{background:#E8B84B;}
+.review-pct{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;width:36px;text-align:right;flex-shrink:0;}
+.review-pct.positive{color:var(--green);}
+.review-pct.negative{color:var(--red);}
+.review-pct.neutral{color:var(--yellow);}
+
+.complaints{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:14px;}
+.complaints li{font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:8px;align-items:flex-start;}
+.complaints li::before{content:'→';color:var(--red);flex-shrink:0;font-size:11px;margin-top:1px;}
+.ai-est-note{font-size:10px;color:var(--label);font-style:italic;margin-top:10px;padding:7px 10px;background:var(--bg);border-radius:6px;border:1px solid var(--border);}
+
+/* CLAIM */
+.claim-quote{font-size:12px;color:var(--muted);font-style:italic;padding:10px 14px;background:rgba(0,0,0,0.03);border-left:3px solid var(--border2);border-radius:0 8px 8px 0;margin-bottom:14px;line-height:1.6;}
+.claim-result{border-radius:var(--radius-sm);padding:16px;}
+.claim-result.Realistic{background:var(--green-bg);border:1px solid var(--green-border);}
+.claim-result.Exaggerated{background:#FFF8F0;border:1px solid #F5D0A8;}
+.claim-result.Misleading{background:var(--red-bg);border:1px solid var(--red-border);}
+.claim-result.Unverifiable{background:var(--bg);border:1px solid var(--border);}
+.verdict-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
+.verdict-text{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:8px;}
+.claim-result p{font-size:13px;color:var(--text);line-height:1.65;}
+
+/* INSIGHT */
+.insight-box{background:var(--accent-light);border:1.5px solid #DFC4A8;border-radius:var(--radius-sm);padding:18px;}
+.insight-box p{font-size:14px;line-height:1.8;color:#5C3416;}
+
+/* DERM REF */
+.derm-ref{background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:14px 16px;}
+.derm-ref-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:6px;}
+.derm-ref p{font-size:12px;color:#2A4A72;line-height:1.7;}
+
+.ai-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--purple);background:var(--purple-bg);border:1px solid var(--purple-border);padding:3px 9px;border-radius:50px;margin-bottom:10px;font-weight:600;font-family:'Syne',sans-serif;}
+
+
+/* EDUCATION CARD */
+.edu-card{background:linear-gradient(135deg,#1A1614 0%,#2D1F14 100%);border-radius:var(--radius);padding:22px 24px;margin-bottom:14px;position:relative;overflow:hidden;}
+.edu-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(181,98,42,0.15);}
+.edu-card::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(181,98,42,0.08);}
+.edu-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.edu-label::after{content:'';flex:1;height:1px;background:rgba(181,98,42,0.3);}
+.edu-fact{font-family:'DM Serif Display',serif;font-size:17px;color:#F9F6F1;line-height:1.55;margin-bottom:10px;position:relative;z-index:1;}
+.edu-source{font-size:11px;color:rgba(249,246,241,0.45);font-style:italic;position:relative;z-index:1;}
+
+.disclaimer{font-size:11px;color:var(--label);text-align:center;padding:20px 16px;line-height:1.9;border-top:1px solid var(--border);margin-top:4px;}
+.reset-btn{width:100%;padding:13px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;margin-top:8px;transition:all 0.2s;}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+@media(max-width:500px){.dual-grid{grid-template-columns:1fr;}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="logo">Dermato<em>Risk</em> AI</div>
+  <div class="header-right">
+    <div class="badge badge-ai">✦ AI Powered</div>
+    <div class="badge badge-pk">Pakistan · v2.0</div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="hero">
+    <div class="hero-tag">✦ Powered by Llama 3.3 · 70B</div>
+    <h1>Know your skincare<br>risk <em>before</em> you use it</h1>
+    <p>AI-powered ingredient analysis, social media claim detection, and personalized skin insights — for any skincare product.</p>
+  </div>
+
+  <div id="formSection">
+    <!-- SEARCH -->
+    <div class="search-card">
+      <div class="search-label">Product Name</div>
+      <div class="search-box">
+        <input class="search-input" id="productInput" type="text" placeholder="Type any skincare product name…" />
+        <span class="search-icon">🧴</span>
+      </div>
+      <div class="examples-label">Try these:</div>
+      <div class="examples">
+        <div class="ex-pill" onclick="fill('Fair & Lovely Cream')">Fair & Lovely</div>
+        <div class="ex-pill" onclick="fill('Garnier Micellar Water')">Garnier Micellar</div>
+        <div class="ex-pill" onclick="fill('Neutrogena Hydro Boost')">Neutrogena Hydro Boost</div>
+        <div class="ex-pill" onclick="fill('Hemani Rose Cream')">Hemani Rose Cream</div>
+        <div class="ex-pill" onclick="fill('The Ordinary Niacinamide 10%')">The Ordinary Niacinamide</div>
+        <div class="ex-pill" onclick="fill('Ponds White Beauty Cream')">Ponds White Beauty</div>
+        <div class="ex-pill" onclick="fill('Himalaya Neem Face Wash')">Himalaya Neem Wash</div>
+        <div class="ex-pill" onclick="fill('Bioderma Sensibio H2O')">Bioderma Sensibio</div>
+      </div>
+    </div>
+
+    <!-- SKIN PROFILE -->
+    <div class="card">
+      <div class="card-title">Your Skin Profile</div>
+      <div style="margin-bottom:18px;">
+        <div class="field-label">Skin Type <span class="required-dot">* required</span></div>
+        <div class="pill-group" id="skinTypeGroup">
+          <div class="pill" data-val="oily" onclick="selectPill(this,'skinTypeGroup')">Oily</div>
+          <div class="pill" data-val="dry" onclick="selectPill(this,'skinTypeGroup')">Dry</div>
+          <div class="pill" data-val="combination" onclick="selectPill(this,'skinTypeGroup')">Combination</div>
+          <div class="pill" data-val="sensitive" onclick="selectPill(this,'skinTypeGroup')">Sensitive</div>
+          <div class="pill" data-val="normal" onclick="selectPill(this,'skinTypeGroup')">Normal</div>
+        </div>
+      </div>
+      <div>
+        <div class="field-label">Skin Concern <span class="field-sublabel">pick any that apply</span></div>
+        <div class="pill-group" id="skinConcernGroup">
+          <div class="pill" data-val="acne" onclick="togglePill(this)">Acne</div>
+          <div class="pill" data-val="pigmentation" onclick="togglePill(this)">Pigmentation</div>
+          <div class="pill" data-val="dryness" onclick="togglePill(this)">Dryness</div>
+          <div class="pill" data-val="sensitivity" onclick="togglePill(this)">Sensitivity</div>
+          <div class="pill" data-val="anti-aging" onclick="togglePill(this)">Anti-aging</div>
+          <div class="pill" data-val="redness" onclick="togglePill(this)">Redness</div>
+          <div class="pill" data-val="oiliness" onclick="togglePill(this)">Oiliness</div>
+          <div class="pill" data-val="fungal-acne" onclick="togglePill(this)">Fungal Acne</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLAIM -->
+    <div class="card">
+      <div class="card-title">Social Media Influence</div>
+      <div class="field-label" style="margin-bottom:6px;">What claim or caption influenced you?</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Paste the exact caption, review, or TikTok claim that made you want this product</div>
+      <textarea class="claim-textarea" id="claimInput" placeholder="e.g. 'Removes dark spots in 3 days guaranteed!' or 'safe for all skin types, even sensitive'…"></textarea>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <button class="analyze-btn" id="analyzeBtn" onclick="analyze()">
+      <span>✦</span> Analyze Risk
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-ring"></div>
+    <div class="loading-product" id="loadingProduct"></div>
+    <div class="loading-sub">Analyzing with AI…</div>
+    <div class="loading-steps">
+      <div class="loading-step" id="step1">🔍 Identifying ingredients</div>
+      <div class="loading-step" id="step2">⚠️ Detecting risk factors</div>
+      <div class="loading-step" id="step3">📱 Checking social media claims</div>
+      <div class="loading-step" id="step4">✦ Generating personalized insight</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results"></div>
+</div>
+
+<script>
+const WORKER_URL = 'https://dermatologyrisk-proxy.eshas312.workers.dev';
+let skinType = '';
+let skinConcerns = [];
+
+function fill(name) {
+  document.getElementById('productInput').value = name;
+  document.getElementById('productInput').focus();
+}
+function selectPill(el, groupId) {
+  document.querySelectorAll('#'+groupId+' .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  skinType = el.dataset.val;
+}
+function togglePill(el) {
+  el.classList.toggle('active');
+  const v = el.dataset.val;
+  skinConcerns = el.classList.contains('active') ? [...skinConcerns, v] : skinConcerns.filter(x => x !== v);
+}
+function showError(msg) { const e = document.getElementById('errorMsg'); e.textContent = msg; e.style.display = 'block'; }
+function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
+
+// Animated loading steps
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4'];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i > 0) document.getElementById(steps[i-1]).className = 'loading-step done';
+    if (i < steps.length) {
+      document.getElementById(steps[i]).className = 'loading-step active';
+      i++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 900);
+  return interval;
+}
+
+async function analyze() {
+  hideError();
+  const productName = document.getElementById('productInput').value.trim();
+  const claim = document.getElementById('claimInput').value.trim();
+
+  if (!productName) { showError('Please enter a product name.'); return; }
+  if (!skinType) { showError('Please select your skin type.'); return; }
+
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('loadingScreen').style.display = 'block';
+  document.getElementById('loadingProduct').textContent = productName;
+  const stepInterval = animateSteps();
+
+  const concernsText = skinConcerns.length ? skinConcerns.join(', ') : 'none specified';
+
+  const prompt = `You are DermatoRisk AI, a dermatology-informed skincare risk assessment system designed for young adults aged 15-30 in Pakistan who rely on social media for skincare decisions.
+
+Analyze this product and return ONLY valid JSON with no markdown fences, no explanation:
+
+Product: "${productName}"
+User Skin Type: ${skinType}
+User Skin Concerns: ${concernsText}
+Social Media Claim to analyze: "${claim || 'none provided'}"
+
+Return this exact JSON structure:
+{
+  "riskLevel": "safe" or "caution" or "high",
+  "riskSummary": "one clear sentence summarizing the overall risk for this user",
+  "ingredientFlags": [
+    {
+      "name": "ingredient name",
+      "risk": "high" or "medium" or "low",
+      "reason": "brief clinical reason this ingredient is flagged",
+      "skinNote": "specific risk or benefit for ${skinType} skin type"
+    }
+  ],
+  "trendView": "1-2 sentences: what social media and influencers say about this product",
+  "clinicalView": "1-2 sentences: what dermatology and clinical evidence actually shows",
+  "reviewPatterns": {
+    "positive": 0-100,
+    "irritation": 0-100,
+    "neutral": 0-100
+  },
+  "commonComplaints": ["complaint 1", "complaint 2", "complaint 3"],
+  "claimVerdict": "Realistic" or "Exaggerated" or "Misleading" or "Unverifiable" or "none",
+  "claimAnalysis": "2-3 sentences analyzing the social media claim against clinical evidence. Empty string if no claim.",
+  "personalInsight": "3-4 sentences of specific, practical advice for ${skinType} skin with concerns: ${concernsText}. Mention what to watch for, how to use safely, what to pair with.",
+  "dermReference": "cite a relevant dermatology study, clinical database, or evidence-based principle that supports your analysis",
+  "didYouKnow": "one concise, surprising, clinically accurate skincare education fact directly relevant to this product category, ingredient, or skin concern. Start with the fact itself, not the words Did you know. Make it genuinely useful and specific.",
+  "didYouKnowSource": "brief source or basis e.g. AAD Guidelines, Journal of Investigative Dermatology, or general dermatology principle"
+}
+
+Rules:
+- Flag known harmful ingredients: corticosteroids, hydroquinone, mercury, strong acids >10%, fragrance allergens, alcohol denat, high-comedogenicity oils, parabens, SLS
+- reviewPatterns must add up to 100
+- Be honest and clinically accurate, not alarmist
+- If you don't recognize the product, analyze based on product category and typical ingredients`;
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 1400,
+        temperature: 0.25,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    clearInterval(stepInterval);
+    ['step1','step2','step3','step4'].forEach(s => document.getElementById(s).className = 'loading-step done');
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'Worker error ' + res.status);
+    }
+
+    const data = await res.json();
+    const raw = data.choices?.[0]?.message?.content || '';
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    setTimeout(() => {
+      document.getElementById('loadingScreen').style.display = 'none';
+      renderResults(productName, result, claim);
+    }, 500);
+
+  } catch(e) {
+    clearInterval(stepInterval);
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('formSection').style.display = 'block';
+    showError('❌ Analysis failed: ' + e.message + '. Please try again.');
+  }
+}
+
+function renderResults(productName, r, userClaim) {
+  const riskConfig = {
+    safe:    { icon:'✅', cls:'safe',    label:'SAFE TO USE',      title:'Safe to Use' },
+    caution: { icon:'⚠️', cls:'caution', label:'USE WITH CAUTION', title:'Use with Caution' },
+    high:    { icon:'🚫', cls:'high',    label:'HIGH RISK',        title:'High Risk' }
+  };
+  const rc = riskConfig[r.riskLevel] || riskConfig.caution;
+
+  // Ingredient flags
+  const dotCls = { high:'high', medium:'medium', low:'low' };
+  const rowCls = { high:'high-risk', medium:'med-risk', low:'low-risk' };
+  const ingHTML = (r.ingredientFlags || []).length
+    ? (r.ingredientFlags).map(ing => `
+        <div class="ing-row ${rowCls[ing.risk]||'low-risk'}">
+          <div class="ing-dot ${dotCls[ing.risk]||'low'}"></div>
+          <div>
+            <div class="ing-name">${ing.name}</div>
+            <div class="ing-reason">${ing.reason}</div>
+            ${ing.skinNote ? `<div class="ing-skin-note">For your ${skinType} skin: ${ing.skinNote}</div>` : ''}
+          </div>
+        </div>`).join('')
+    : '<div style="font-size:13px;color:var(--muted);padding:8px 0;">No major ingredient concerns identified.</div>';
+
+  // Review bars
+  const rp = r.reviewPatterns || { positive:65, irritation:20, neutral:15 };
+  const barsHTML = [
+    { label:'Positive outcomes', pct: rp.positive||0, type:'positive' },
+    { label:'Irritation reported', pct: rp.irritation||0, type:'negative' },
+    { label:'Neutral / no change', pct: rp.neutral||0, type:'neutral' }
+  ].map(b => `
+    <div class="review-row-item">
+      <div class="review-row-label">${b.label}</div>
+      <div class="review-track"><div class="review-fill ${b.type}" style="width:${b.pct}%"></div></div>
+      <div class="review-pct ${b.type}">${b.pct}%</div>
+    </div>`).join('');
+
+  const complaintsHTML = (r.commonComplaints || []).map(c => `<li>${c}</li>`).join('');
+
+  // Claim
+  const verdictMap = {
+    Realistic:    { color:'var(--green)',  emoji:'✅' },
+    Exaggerated:  { color:'var(--accent)', emoji:'⚡' },
+    Misleading:   { color:'var(--red)',    emoji:'🚨' },
+    Unverifiable: { color:'var(--muted)', emoji:'❓' },
+  };
+  const vs = verdictMap[r.claimVerdict] || verdictMap.Unverifiable;
+  const showClaim = r.claimVerdict && r.claimVerdict !== 'none' && (userClaim || r.claimAnalysis);
+
+  const html = `
+    <div class="result-header">
+      <div class="product-chip">
+        <strong>${productName}</strong>
+        <span>·</span>
+        <span class="ai-chip">✦ AI Analyzed</span>
+      </div>
+    </div>
+
+    <div class="risk-banner ${rc.cls}">
+      <div class="risk-emoji">${rc.icon}</div>
+      <div>
+        <div class="risk-label-tag ${rc.cls}">${rc.label}</div>
+        <div class="risk-title ${rc.cls}">${rc.title}</div>
+        <div class="risk-meta">${r.riskSummary || ''}<br>${skinType} skin${skinConcerns.length ? ' · ' + skinConcerns.join(', ') : ''}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ingredient Risk Flags</div>
+      <div class="ai-tag">✦ AI-analyzed in real time</div>
+      <div class="ing-flags">${ingHTML}</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Trend vs Clinical Reality</div>
+      <div class="dual-grid">
+        <div class="dual-card trend"><div class="dual-label">📱 Trend View</div><p>${r.trendView || '—'}</p></div>
+        <div class="dual-card clinical"><div class="dual-label">🔬 Clinical View</div><p>${r.clinicalView || '—'}</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Review Pattern Analysis</div>
+      <div class="ai-tag">✦ AI-estimated from known product profile</div>
+      <div class="review-rows">${barsHTML}</div>
+      ${complaintsHTML ? `<ul class="complaints">${complaintsHTML}</ul>` : ''}
+      <div class="ai-est-note">Estimates based on AI knowledge of this product category and general user experience patterns. Not sourced from a live review database.</div>
+    </div>
+
+    ${showClaim ? `
+    <div class="card">
+      <div class="card-title">Social Media Claim Analysis</div>
+      ${userClaim ? `<div class="claim-quote">"${userClaim}"</div>` : ''}
+      <div class="ai-tag">✦ AI fact-checked in real time</div>
+      <div class="claim-result ${r.claimVerdict}">
+        <div class="verdict-label" style="color:${vs.color}">Verdict</div>
+        <div class="verdict-text" style="color:${vs.color}">${vs.emoji} ${r.claimVerdict}</div>
+        <p>${r.claimAnalysis || ''}</p>
+      </div>
+    </div>` : ''}
+
+    <div class="card">
+      <div class="card-title">Personalized Insight</div>
+      <div class="ai-tag">✦ Generated for your skin profile</div>
+      <div class="insight-box"><p>${r.personalInsight || ''}</p></div>
+    </div>
+
+    ${r.dermReference ? `
+    <div class="card">
+      <div class="card-title">Dermatology Reference</div>
+      <div class="derm-ref">
+        <div class="derm-ref-label">Evidence Base</div>
+        <p>${r.dermReference}</p>
+      </div>
+    </div>` : ''}
+
+    ${r.didYouKnow ? `
+    <div class="edu-card">
+      <div class="edu-label">💡 Did You Know</div>
+      <div class="edu-fact">${r.didYouKnow}</div>
+      <div class="edu-source">${r.didYouKnowSource || 'Dermatology Reference'}</div>
+    </div>` : ''}
+
+    <div class="disclaimer">
+      ⚕️ DermatoRisk AI is a pre-usage decision-support tool only.<br>
+      It does not store personal data and does not replace professional dermatological consultation.<br>
+      AI-generated analysis is based on general dermatological knowledge, not product-specific lab testing.<br>
+      Always patch test before full use.
+    </div>
+    <button class="reset-btn" onclick="resetForm()">← Analyze another product</button>
+  `;
+
+  const el = document.getElementById('results');
+  el.innerHTML = html;
+  el.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetForm() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('formSection').style.display = 'block';
+  document.getElementById('productInput').value = '';
+  document.getElementById('claimInput').value = '';
+  document.querySelectorAll('.pill.active').forEach(p => p.classList.remove('active'));
+  ['step1','step2','step3','step4'].forEach(s => document.getElementById(s).className = 'loading-step');
+  skinType = ''; skinConcerns = [];
+  hideError();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
