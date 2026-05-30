@@ -17,12 +17,12 @@ DermatoRisk AI provides instant, evidence-based risk assessment before purchasin
 ---
 
 ## Core Features
-- **Ingredient Risk Detection** — flags harmful components (steroids, bleaching agents, irritants, comedogenic substances) with skin-type specific warnings
-- **Social Media Claim Analysis** — evaluates influencer/TikTok claims as Realistic, Exaggerated, Misleading, or Unverifiable
-- **Trend vs Clinical Dual View** — shows what social media says versus what dermatology actually shows
-- **Personalized Risk Classification** — Safe / Caution / High Risk based on your skin type and concerns
-- **Skincare Education** — clinically accurate dermatology fact after every analysis
-- **Search Any Product** — AI analyzes any skincare product in real time
+- Ingredient Risk Detection: flags harmful components (steroids, bleaching agents, irritants, comedogenic substances) with skin-type specific warnings
+- Social Media Claim Analysis: evaluates influencer/TikTok claims as Realistic, Exaggerated, Misleading, or Unverifiable
+- Trend vs Clinical Dual View: shows what social media says versus what dermatology actually shows
+- Personalized Risk Classification: Safe / Caution / High Risk based on your skin type and concerns
+- Skincare Education: clinically accurate dermatology fact after every analysis
+- Search Any Product: AI analyzes any skincare product in real time
 
 ---
 
