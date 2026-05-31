@@ -4,7 +4,7 @@
 > Pre-usage skincare risk assessment tool for adolescents and young adults (15–30) in Pakistan who rely on social media for skincare decisions.
 
 ## Live Demo
-🔗 [Try it here](https://your-netlify-url.netlify.app)
+🔗 [Try it here](https://dapper-brioche-00fd26.netlify.app/)
 
 ---
 
